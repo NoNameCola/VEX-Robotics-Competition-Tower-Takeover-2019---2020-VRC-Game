@@ -28,7 +28,8 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
-
+	pros::Motor left_wheels(1,MOTOR_GEARSET_18,false,MOTOR_ENCODER_COUNTS);
+	pros::Motor right_wheels(2,MOTOR_GEARSET_18,true,MOTOR_ENCODER_COUNTS);
 	pros::lcd::register_btn1_cb(on_center_button);
 }
 
@@ -93,10 +94,10 @@ void opcontrol() {
 		right_mtr = right;
 		pros::delay(20);
 		*/
-		pros::Motor left wheels (LEFT_WHEELS);
-		pros::Motor right_wheels(RIGHT_WHEELS, true); // This reverses the motor, makes it go counterclockwise from the prespective of the brain
-		pros::Controller master (E_CONTROLLER_MASTER);
-
+		pros::Motor left_wheels (left_wheels);
+		pros::Motor right_wheels(right_wheels); // This reverses the motor, makes it go counterclockwise from the prespective of the brain
+		pros::Controller master (pros::E_CONTROLLER_MASTER);
+		int power,turn,left,right;
 		while(true){
 			//tank drive code
 			/*
@@ -105,15 +106,14 @@ void opcontrol() {
 			*/
 
 			//arcade drive code
-			int power = master.get_analog(ANALOG_LEFT_Y);
-			int turn = master.get_analog(ANALOG_RIGHT_X);
-			int left = power + turn;
-			int right = power = turn;
+			power = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_LEFT_Y);
+			turn = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_RIGHT_X);
+			left = power + turn;
+			right = power - turn;
 			left_wheels.move(left);
 			right_wheels.move(right);
 			// important delay for multitasking of the brain and to avoid abnormailities.
-			pros::delay(2);
+			pros::delay(10);
 		}
 
 	}
-}
