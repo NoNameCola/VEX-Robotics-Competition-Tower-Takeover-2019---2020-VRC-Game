@@ -1,8 +1,8 @@
 #include "main.h"
 
 //define the ports for the motor in the brain
-#define LEFT_WHEELS 1
-#define RIGHT_WHEELS 2
+const int left_wheels = 1;
+const int right_wheels = 2;
 /**
  * A callback function for LLEMU's center button.
  *
@@ -13,9 +13,9 @@ void on_center_button() {
 	static bool pressed = false;
 	pressed = !pressed;
 	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
+		pros::lcd::set_text(3, "I was pressed!");
 	} else {
-		pros::lcd::clear_line(2);
+		pros::lcd::clear_line(3);
 	}
 }
 
@@ -28,9 +28,11 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
-	pros::Motor left_wheels(1,MOTOR_GEARSET_18,false,MOTOR_ENCODER_COUNTS);
-	pros::Motor right_wheels(2,MOTOR_GEARSET_18,true,MOTOR_ENCODER_COUNTS);
-	pros::lcd::register_btn1_cb(on_center_button);
+	pros::Motor left_wheel_front(1,MOTOR_GEARSET_18,false,MOTOR_ENCODER_COUNTS);
+	pros::Motor right_wheel_front(2,MOTOR_GEARSET_18,true,MOTOR_ENCODER_COUNTS);
+	pros::Motor left_wheel_back(3,MOTOR_GEARSET_18,false,MOTOR_ENCODER_COUNTS);
+	pros::Motor right_wheel_back(4,MOTOR_GEARSET_18,true,MOTOR_ENCODER_COUNTS);
+	//pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -94,10 +96,12 @@ void opcontrol() {
 		right_mtr = right;
 		pros::delay(20);
 		*/
-		pros::Motor left_wheels (left_wheels);
-		pros::Motor right_wheels(right_wheels); // This reverses the motor, makes it go counterclockwise from the prespective of the brain
+		pros::Motor left_wheel_front(1);
+		pros::Motor right_wheel_front(2);
+		pros::Motor left_wheel_back(3);
+		pros::Motor right_wheel_back(4);
 		pros::Controller master (pros::E_CONTROLLER_MASTER);
-		int power,turn,left,right;
+		int power,turn;
 		while(true){
 			//tank drive code
 			/*
@@ -108,11 +112,11 @@ void opcontrol() {
 			//arcade drive code
 			power = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_LEFT_Y);
 			turn = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_RIGHT_X);
-			left = power + turn;
-			right = power - turn;
-			left_wheels.move(left);
-			right_wheels.move(right);
+
+			left_wheels.move(power + turn);
+			right_wheels.move(power - turn);
 			// important delay for multitasking of the brain and to avoid abnormailities.
+			std::cout << left_wheels.get_voltage()*0.010583 << std::endl;
 			pros::delay(10);
 		}
 
