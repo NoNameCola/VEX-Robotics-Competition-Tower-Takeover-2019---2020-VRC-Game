@@ -112,11 +112,13 @@ void opcontrol() {
 			*/
 
 			//arcade drive code
-			power = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_LEFT_Y);
+			power = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_RIGHT_Y);
 			turn = master.get_analog(pros::controller_analog_e_t::E_CONTROLLER_ANALOG_RIGHT_X);
 
-			left_wheels.move(power + turn);
-			right_wheels.move(power - turn);
+			left_wheel_front.move(power + turn);
+			right_wheel_front.move(power - turn);
+			left_wheel_back.move(power - turn);
+			right_wheel_back.move(power + turn);
 			// important delay for multitasking of the brain and to avoid abnormailities.
 			std::cout << left_wheels.get_voltage()*0.010583 << std::endl;
 			pros::delay(10);
