@@ -1,8 +1,10 @@
 #include "main.h"
 
 //define the ports for the motor in the brain
-const int left_wheels = 1;
-const int right_wheels = 2;
+const int left_wheel_front = 1;
+const int right_wheel_front = 2;
+const int left_wheel_back = 3;
+const int right_wheel_back = 4;
 /**
  * A callback function for LLEMU's center button.
  *
